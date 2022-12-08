@@ -25,7 +25,7 @@ public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String codiceConto;
+	private String codiceconto;
 	private Double saldoattuale;
 	private Double debito;
 	private String tipoConto;
@@ -35,11 +35,11 @@ public class Account {
 	@JsonIgnore
 	private Utente utente;
 	
-	public String getCodiceConto() {
-		return codiceConto;
+	public String getCodiceconto() {
+		return codiceconto;
 	}
-	public void setCodiceConto(String codiceConto) {
-		this.codiceConto = codiceConto;
+	public void setCodiceconto(String codiceconto) {
+		this.codiceconto = codiceconto;
 	}
 	public Double getSaldoattuale() {
 		return saldoattuale;

@@ -83,14 +83,14 @@ public class DbServiceTest {
 		utenteRepo.saveAll(listUt);
 		
 		Account acc1 = new Account();
-		acc1.setCodiceConto("consto-test1");
+		acc1.setCodiceconto("consto-test1");
 		acc1.setDebito(0.00);
 		acc1.setSaldoattuale(100.00);
 		acc1.setTipoConto("Debit");
 		acc1.setUtente(utenteToPay);
 		
 		Account acc2 = new Account();
-		acc2.setCodiceConto("consto-test2");
+		acc2.setCodiceconto("consto-test2");
 		acc2.setDebito(0.00);
 		acc2.setSaldoattuale(10.00);
 		acc2.setTipoConto("Debit");

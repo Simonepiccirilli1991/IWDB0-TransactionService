@@ -30,7 +30,7 @@ public class DispoService {
 		DispoResponse response = new DispoResponse();
 
 		Account entity = new Account();
-		entity.setCodiceConto(""+request.getBtToReceive().hashCode());
+		entity.setCodiceconto(""+request.getBtToReceive().hashCode());
 
 		Double debito = (ObjectUtils.isEmpty(request.getDebito())) ? 0 : request.getDebito();
 		entity.setDebito(debito);
@@ -141,13 +141,19 @@ public class DispoService {
 						Double updateContoPay = soldiConto - request.getImporto();
 						Double updateContoReceive = userToReceive.getSaldoattuale() + request.getImporto();
 						// scalo soldi da chi paga
-						userToPay.setSaldoattuale(updateContoPay);
-						//dispoRepo.addBalance(request.getBtToPay(), updateContoPay);
-						accountRepo.save(userToPay);
+						//userToPay.setSaldoattuale(updateContoPay);
+						accountRepo.addBalance(userToPay.getCodiceconto(), updateContoPay);
+						//accountRepo.save(userToPay);
 						// addo soldi a chi riceve
-						userToReceive.setSaldoattuale(updateContoReceive);
-						accountRepo.save(userToReceive);
-						//dispoRepo.addBalance(request.getBtToReceiv(), request.getImporto());
+						//userToReceive.setSaldoattuale(updateContoReceive);
+						//accountRepo.save(userToReceive);
+						accountRepo.addBalance(userToReceive.getCodiceconto(), updateContoReceive);
+						
+						//cancellare poi
+						Account print1 = accountRepo.findByUtenteBt(request.getBtToPay());
+						Account print2 = accountRepo.findByUtenteBt(request.getBtToReceive());
+						System.out.println(print1);
+						System.out.println(print2);
 					}//non puo pagare diretto
 					else {
 						// calcolo quanto scalare a conto e aggiungere a debito
