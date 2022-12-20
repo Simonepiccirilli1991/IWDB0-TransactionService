@@ -7,6 +7,7 @@ public class DispoResponse extends BaseResponse{
 	
 	private Boolean transactionOk;
 	private String msg;
+	//usata per get info account
 	private Account account;
 	
 	public Boolean getTransactionOk() {
