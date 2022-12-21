@@ -1,18 +1,20 @@
 package com.iwbd0.saga.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+@Entity
 @Table(name = "inventory")
 public class Inventory {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String nome;
-	private String codiceServizio;
+	private String codiceservizio;
 	private int ammontareDisponibile;
 	
 	public int getId() {
@@ -27,11 +29,11 @@ public class Inventory {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public String getCodiceServizio() {
-		return codiceServizio;
+	public String getCodiceservizio() {
+		return codiceservizio;
 	}
-	public void setCodiceServizio(String codiceServizio) {
-		this.codiceServizio = codiceServizio;
+	public void setCodiceservizio(String codiceservizio) {
+		this.codiceservizio = codiceservizio;
 	}
 	public int getAmmontareDisponibile() {
 		return ammontareDisponibile;

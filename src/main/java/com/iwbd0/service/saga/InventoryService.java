@@ -27,7 +27,7 @@ public class InventoryService {
 
 		Inventory dto = new Inventory();
 		dto.setAmmontareDisponibile(request.getAmmontareDisponibile());
-		dto.setCodiceServizio(request.getCodiceServizio());
+		dto.setCodiceservizio(request.getCodiceServizio());
 		dto.setNome(request.getNome());
 
 		try {
@@ -63,12 +63,24 @@ public class InventoryService {
 		InventoryResponse response = new InventoryResponse();
 
 		Inventory inventory = null;
-		try {
-			inventory = invRepo.findBycodiceServizio(request.getCodiceServizio());
-		}catch(Exception e) {
+		//TODO fixare query non funziona al momento dunno why
+//		try {
+//			inventory = invRepo.findByCodiceServizio(request.getCodiceServizio());
+//		}catch(Exception e) {
+//			response.setError(true);
+//			return response;
+//		}
+		
+		
+		List<Inventory> listInv = invRepo.findAll();
+		Optional<Inventory> inv = listInv.stream().filter(resp -> resp.getCodiceservizio().equals(request.getCodiceServizio())).findAny();
+		
+		if(inv.isEmpty()) {
 			response.setError(true);
 			return response;
 		}
+		
+		inventory = inv.get();
 
 		if(request.getQuantita() > inventory.getAmmontareDisponibile()) {
 			response.setError(true);
@@ -78,7 +90,7 @@ public class InventoryService {
 		// provo a recuperare il servizio da db per prendere il costo
 		ServiziResponse servizio = null;
 		try {
-			servizio = servServ.findService(inventory.getCodiceServizio());
+			servizio = servServ.findService(inventory.getCodiceservizio());
 		}catch(Exception e) {
 			response.setError(true);
 			return response;
@@ -102,7 +114,7 @@ public class InventoryService {
 
 		Inventory inventory = null;
 		try {
-			inventory = invRepo.findBycodiceServizio(request.getCodiceServizio());
+			inventory = invRepo.findByCodiceServizio(request.getCodiceServizio());
 		}catch(Exception e) {
 			response.setError(true);
 			return response;

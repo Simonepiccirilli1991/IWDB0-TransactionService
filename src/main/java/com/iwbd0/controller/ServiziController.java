@@ -37,7 +37,7 @@ public class ServiziController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	// delete
-	@RequestMapping("find/{codiceServizio}")
+	@RequestMapping("delete/{codiceServizio}")
 	public ResponseEntity<Boolean> deleteService(@PathVariable("codiceServizio") String request){
 		
 		Boolean response = servServ.deleteService(request);
