@@ -44,6 +44,7 @@ public class OrdiniService {
 		oRequest.setBtToReceive(request.getBtRicev());
 		oRequest.setCodiceProdotto(request.getCodiceProd());
 		oRequest.setImporto(request.getCosto());
+		oRequest.setTrxId(iResp.getId());
 		
 		OrchestratorResponse oResponse = orchestrator.sagaOrchestration(oRequest);
 		
@@ -77,7 +78,7 @@ public class OrdiniService {
 	public OrdiniResponse updateStatus(StatusRequest request) {
 		
 		OrdiniResponse response = new OrdiniResponse();
-		Optional<Ordini> iresp = ordiniRepo.findByBtAcquirente(request.getBt());
+		Optional<Ordini> iresp = ordiniRepo.findById((long) request.getTrxId());
 		
 		if(!iresp.isEmpty()) {
 			iresp.get().setStatus(request.getStatus());

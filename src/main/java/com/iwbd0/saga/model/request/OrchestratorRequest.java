@@ -6,6 +6,7 @@ public class OrchestratorRequest {
 	private String btToReceive; 
 	private Double importo;
 	private String codiceProdotto;
+	private int trxId;
 	
 	public String getBtToPay() {
 		return btToPay;
@@ -30,6 +31,12 @@ public class OrchestratorRequest {
 	}
 	public void setCodiceProdotto(String codiceProdotto) {
 		this.codiceProdotto = codiceProdotto;
+	}
+	public int getTrxId() {
+		return trxId;
+	}
+	public void setTrxId(int trxId) {
+		this.trxId = trxId;
 	}
 	
 	
