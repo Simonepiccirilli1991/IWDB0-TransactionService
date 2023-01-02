@@ -6,7 +6,6 @@ public class DispoResponse extends BaseResponse{
 
 	
 	private Boolean transactionOk;
-	private String msg;
 	//usata per get info account
 	private Account account;
 	
@@ -15,12 +14,6 @@ public class DispoResponse extends BaseResponse{
 	}
 	public void setTransactionOk(Boolean transactionOk) {
 		this.transactionOk = transactionOk;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
 	}
 	public Account getAccount() {
 		return account;

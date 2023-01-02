@@ -47,7 +47,12 @@
     		<groupId>io.projectreactor</groupId>
    			<artifactId>reactor-core</artifactId>
 		</dependency>
-
+		
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

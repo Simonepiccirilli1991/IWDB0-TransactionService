@@ -4,18 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "acquisti")
-public class OrdineAcquisti {
+public class Ordini {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String btAcquirente;
-	private String btVenditore;
-	private String codiceProdotto;
+	private String btRicev;
+	private String codiceProd;
+	private Double costo;
 	private String status;
 	
 	public int getId() {
@@ -30,17 +29,23 @@ public class OrdineAcquisti {
 	public void setBtAcquirente(String btAcquirente) {
 		this.btAcquirente = btAcquirente;
 	}
-	public String getBtVenditore() {
-		return btVenditore;
+	public String getBtRicev() {
+		return btRicev;
 	}
-	public void setBtVenditore(String btVenditore) {
-		this.btVenditore = btVenditore;
+	public void setBtRicev(String btRicev) {
+		this.btRicev = btRicev;
 	}
-	public String getCodiceProdotto() {
-		return codiceProdotto;
+	public String getCodiceProd() {
+		return codiceProd;
 	}
-	public void setCodiceProdotto(String codiceProdotto) {
-		this.codiceProdotto = codiceProdotto;
+	public void setCodiceProd(String codiceProd) {
+		this.codiceProd = codiceProd;
+	}
+	public Double getCosto() {
+		return costo;
+	}
+	public void setCosto(Double costo) {
+		this.costo = costo;
 	}
 	public String getStatus() {
 		return status;
