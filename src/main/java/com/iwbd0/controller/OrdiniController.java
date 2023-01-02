@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.iwbd0.saga.model.request.OrdiniRequest;
+import com.iwbd0.saga.model.request.StatusRequest;
 import com.iwbd0.saga.model.response.OrdiniResponse;
 import com.iwbd0.service.saga.OrdiniService;
 
@@ -36,9 +37,9 @@ public class OrdiniController {
 		return ordServ.getAll();
 	}
 
-	@PutMapping("update/{bt}/{status}")
-	public void update(@PathVariable("bt") String bt, @PathVariable ("status") String status) {
+	@PostMapping("update")
+	public void update(@RequestBody StatusRequest request) {
 
-		ordServ.updateStatus(bt, status);
+		ordServ.updateStatus(request);
 	}
 }

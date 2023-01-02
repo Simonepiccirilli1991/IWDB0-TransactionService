@@ -1,5 +1,6 @@
 package com.iwbd0.service.saga;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import com.iwbd0.saga.entity.Ordini;
 import com.iwbd0.saga.entity.repo.OrdiniRepo;
 import com.iwbd0.saga.model.request.OrchestratorRequest;
 import com.iwbd0.saga.model.request.OrdiniRequest;
+import com.iwbd0.saga.model.request.StatusRequest;
 import com.iwbd0.saga.model.response.OrchestratorResponse;
 import com.iwbd0.saga.model.response.OrdiniResponse;
 import com.iwbd0.util.OrcClient;
@@ -66,19 +68,20 @@ public class OrdiniService {
 	public OrdiniResponse getAll(){
 		
 		OrdiniResponse response = new OrdiniResponse();
+		response.setOrdini(new ArrayList<>());
 		response.getOrdini().addAll(ordiniRepo.findAll());
 		
 		return response;
 	}
 	
-	public OrdiniResponse updateStatus(String bt, String status) {
+	public OrdiniResponse updateStatus(StatusRequest request) {
 		
 		OrdiniResponse response = new OrdiniResponse();
-		Optional<Ordini> iresp = ordiniRepo.findByBtAcquirente(bt);
+		Optional<Ordini> iresp = ordiniRepo.findByBtAcquirente(request.getBt());
 		
 		if(!iresp.isEmpty()) {
-			iresp.get().setStatus(status);
-			response .setOrdine(ordiniRepo.save(iresp.get()));
+			iresp.get().setStatus(request.getStatus());
+			response.setOrdine(ordiniRepo.save(iresp.get()));
 		}
 		
 		return response;
