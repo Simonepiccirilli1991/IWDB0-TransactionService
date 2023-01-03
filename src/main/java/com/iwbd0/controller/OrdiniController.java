@@ -37,9 +37,12 @@ public class OrdiniController {
 		return ordServ.getAll();
 	}
 
-	@PostMapping("update")
-	public void update(@RequestBody StatusRequest request) {
+	@PutMapping("update/{trxid}/{status}")
+	public void update(@PathVariable ("trxid") int trxId, @PathVariable ("status") String status) {
 
+		StatusRequest request = new StatusRequest();
+		request.setStatus(status);
+		request.setTrxId(trxId);
 		ordServ.updateStatus(request);
 	}
 }
