@@ -38,11 +38,11 @@ public class OrdiniController {
 	}
 
 	@PutMapping("update/{trxid}/{status}")
-	public void update(@PathVariable ("trxid") int trxId, @PathVariable ("status") String status) {
+	public void update(@PathVariable ("trxid") String trxId, @PathVariable ("status") String status) {
 
 		StatusRequest request = new StatusRequest();
 		request.setStatus(status);
-		request.setTrxId(trxId);
+		request.setTrxId(Integer.parseInt(trxId));
 		ordServ.updateStatus(request);
 	}
 }
