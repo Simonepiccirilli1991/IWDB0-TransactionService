@@ -19,8 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iwbd0.saga.entity.Ordini;
+import com.iwbd0.saga.entity.Prodotti;
 import com.iwbd0.saga.entity.repo.OrdiniRepo;
+import com.iwbd0.saga.entity.repo.ProdottiRepo;
 import com.iwbd0.saga.model.request.OrdiniRequest;
+import com.iwbd0.saga.model.request.ProdottiRequest;
 import com.iwbd0.saga.model.response.OrdiniResponse;
 import com.iwbd0.util.OrcClient;
 
@@ -35,6 +38,8 @@ public class SagaControllerTest {
 	MockMvc mvc;
 	@Autowired
 	OrdiniRepo ordiniRepo;
+	@Autowired 
+	ProdottiRepo prodRepo;
 	
 	ObjectMapper mapper = new ObjectMapper();
 	
@@ -83,4 +88,78 @@ public class SagaControllerTest {
 	}
 	
 	// Prodotti test
+	
+	@Test
+	public void TransactionTestOK() throws Exception {
+
+		Prodotti prodotto = new Prodotti();
+		prodotto.setAviableService(10);
+		prodotto.setCodiceProdotto("aaaa1");
+
+		prodRepo.save(prodotto);
+
+		ProdottiRequest request = new ProdottiRequest();
+		request.setAviableService(10);
+		request.setCodiceProdotto("aaaa1");
+
+		mvc.perform(post("/prodotti/transact")
+				.contentType("application/json")
+				.content(mapper.writeValueAsString(request)))
+		.andExpect(status().isOk()).andReturn().getResponse();
+
+		Prodotti prod = prodRepo.findByCodiceProdotto("aaaa1");
+
+		assertThat(prod.getAviableService()).isEqualTo(9);
+	}
+
+	@Test
+	public void insertProdottoTestOK() throws Exception {
+
+		ProdottiRequest request = new ProdottiRequest();
+		request.setAviableService(10);
+		request.setCodiceProdotto("aaaa2");
+		
+		mvc.perform(put("/prodotti/insert")
+				.contentType("application/json")
+				.content(mapper.writeValueAsString(request)))
+		.andExpect(status().isOk()).andReturn().getResponse();
+
+
+		Prodotti prod = prodRepo.findByCodiceProdotto("aaaa2");
+
+		assertThat(prod.getAviableService()).isEqualTo(10);
+
+	}
+	
+	@Test
+	public void transactionERollbackTestOK() throws Exception {
+		
+		ProdottiRequest request = new ProdottiRequest();
+		request.setAviableService(10);
+		request.setCodiceProdotto("aaaa3");
+		
+		Prodotti prodotto = new Prodotti();
+		prodotto.setAviableService(10);
+		prodotto.setCodiceProdotto("aaaa3");
+		
+		prodRepo.save(prodotto);
+		
+		mvc.perform(post("/prodotti/transact")
+				.contentType("application/json")
+				.content(mapper.writeValueAsString(request)))
+		.andExpect(status().isOk()).andReturn().getResponse();
+
+		Prodotti prod = prodRepo.findByCodiceProdotto("aaaa3");
+
+		assertThat(prod.getAviableService()).isEqualTo(9);
+		
+		mvc.perform(post("/prodotti/rollb")
+				.contentType("application/json")
+				.content(mapper.writeValueAsString(request)))
+		.andExpect(status().isOk()).andReturn().getResponse();
+		
+		prod = prodRepo.findByCodiceProdotto("aaaa3");
+
+		assertThat(prod.getAviableService()).isEqualTo(10);
+	}
 }
