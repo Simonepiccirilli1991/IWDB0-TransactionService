@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim-buster as builder
+FROM openjdk:17-slim as builder
 
 LABEL name="IWDB0"
 
@@ -18,7 +18,7 @@ COPY . .
 # Build the application
 RUN mvn package
 
-FROM openjdk:17-jre-slim-buster
+FROM openjdk:17-slim
 
 # Set the working directory to /app
 WORKDIR /app

@@ -19,22 +19,6 @@ public class DispoController {
 	DispoService dispoService;
 	
 	
-	
-	@RequestMapping("Insert")
-	public DispoResponse insertDispo(@RequestBody DispoRequest request) {
-		
-		return dispoService.inserisciDati(request);
-			
-	}
-	
-	
-	@RequestMapping("get/{bt}")
-	public DispoResponse getInfoDispo(@PathVariable String bt ) {
-		
-		return dispoService.infoAccount(bt);
-	}
-	
-	
 	@RequestMapping("transaction")
 	DispoResponse maketransaction(@RequestBody DispoRequest request) {
 		
