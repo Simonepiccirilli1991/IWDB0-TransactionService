@@ -8,6 +8,7 @@ public class UtenteRequest {
 	private String cf;
 	private String channel;
 	private String bancaId;
+	private String mail;
 	
 	public String getNome() {
 		return nome;
@@ -44,6 +45,12 @@ public class UtenteRequest {
 	}
 	public void setBancaId(String bancaId) {
 		this.bancaId = bancaId;
+	}
+	public String getMail() {
+		return mail;
+	}
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 	
 	

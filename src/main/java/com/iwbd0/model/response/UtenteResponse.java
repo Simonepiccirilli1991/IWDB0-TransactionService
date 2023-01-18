@@ -6,6 +6,7 @@ public class UtenteResponse extends BaseResponse{
 
 	private Utente utente;
 	private String bt;
+	private String username;
 
 	public Utente getUtente() {
 		return utente;
@@ -21,6 +22,14 @@ public class UtenteResponse extends BaseResponse{
 
 	public void setBt(String bt) {
 		this.bt = bt;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	

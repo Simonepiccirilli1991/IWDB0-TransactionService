@@ -31,6 +31,7 @@ public class UtenteService {
 		utente.setCf(request.getCf());
 		utente.setChannel(request.getChannel());
 		utente.setUsername(request.getNome().substring(0, 2)+request.getCognome());
+		utente.setMail(request.getMail());
 		
 		try {
 		utenteRepo.save(utente);
@@ -43,6 +44,7 @@ public class UtenteService {
 		}
 		
 		response.setBt(bt);
+		response.setUsername(utente.getUsername());
 		response.setCodiceEsito("00");
 		return response;
 		
