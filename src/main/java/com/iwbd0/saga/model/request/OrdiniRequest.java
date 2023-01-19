@@ -6,6 +6,7 @@ public class OrdiniRequest {
 	private String btRicev;
 	private String codiceProd;
 	private Double costo;
+	private Long orderNumber;
 	
 	public String getBtAcquirente() {
 		return btAcquirente;
@@ -30,6 +31,12 @@ public class OrdiniRequest {
 	}
 	public void setCosto(Double costo) {
 		this.costo = costo;
+	}
+	public Long getOrderNumber() {
+		return orderNumber;
+	}
+	public void setOrderNumber(Long orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 	
 	

@@ -55,11 +55,11 @@ public class OrdiniService {
 	}
 	
 	
-	public OrdiniResponse getOrderByBTacq(OrdiniRequest request) {
+	public OrdiniResponse getOrderById(OrdiniRequest request) {
 		
 		OrdiniResponse response = new OrdiniResponse();
 		
-		Optional<Ordini> iresp = ordiniRepo.findByBtAcquirente(request.getBtAcquirente());
+		Optional<Ordini> iresp = ordiniRepo.findById(request.getOrderNumber());
 		
 		response.setOrdine(iresp.get());
 		

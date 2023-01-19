@@ -54,7 +54,8 @@ public class SagaDbTest {
 		
 		OrdiniRequest request = new OrdiniRequest();
 		request.setBtAcquirente("btAcquisto");
-		OrdiniResponse iresp = ordService.getOrderByBTacq(request);
+		request.setOrderNumber((long) 1);
+		OrdiniResponse iresp = ordService.getOrderById(request);
 		
 		assertThat(iresp.getOrdine().getCosto()).isEqualTo(60.00);
 		assertThat(iresp.getOrdine().getCodiceProd()).isEqualTo("1111");

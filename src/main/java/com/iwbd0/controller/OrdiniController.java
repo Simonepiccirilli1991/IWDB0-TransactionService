@@ -29,7 +29,7 @@ public class OrdiniController {
 
 	@PostMapping("get")
 	public OrdiniResponse getOrdini(@RequestBody OrdiniRequest request) {
-		return ordServ.getOrderByBTacq(request);
+		return ordServ.getOrderById(request);
 	}
 
 	@PostMapping("getall")
