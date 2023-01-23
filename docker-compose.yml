@@ -1,0 +1,26 @@
+services:
+  GPOC0:
+    build:
+      context: .
+      dockerfile: GPOC0/Dockerfile
+    ports:
+      - "8085:8085"
+    image: gpoc-img
+  IWDB0:
+    build:
+      context: .
+      dockerfile: IWDB0/Dockerfile
+    ports:
+      - "8083:8083"
+    image: iwdb-img
+    volumes:
+      - data:/var/lib/h2
+  SMOC0:
+    build:
+      context: .
+      dockerfile: SMOC0/Dockerfile
+    ports:
+      - "8089:8089"
+    image: smoc-img
+volumes:
+  data:
