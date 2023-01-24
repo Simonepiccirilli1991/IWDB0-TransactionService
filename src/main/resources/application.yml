@@ -20,5 +20,5 @@ server:
   
 
 config:
-  orchestrator:
+  smoc0:
     end-point: ${SMOC0_ENDPOINT:http://localhost:8089}

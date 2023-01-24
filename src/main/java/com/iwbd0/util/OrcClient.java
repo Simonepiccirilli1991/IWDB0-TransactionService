@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class OrcClient {
 
-	@Value("${config.orchestrator.end-point}")
+	@Value("${config.smoc0.end-point}")
 	private String url;
 	WebClient webClient = WebClient.create(url);
 	
@@ -25,7 +25,7 @@ public class OrcClient {
 		OrchestratorResponse iResp = new OrchestratorResponse();
 		Mono<OrchestratorResponse> response = null;
 
-		String uri = UriComponentsBuilder.fromHttpUrl(url + "/sess/get").toUriString();
+		String uri = UriComponentsBuilder.fromHttpUrl(url + "/orc/do").toUriString();
 		try {
 			response = webClient.post()
 					.uri(uri)

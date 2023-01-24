@@ -19,5 +19,5 @@ server:
  port: 8083
 
 config:
-  orchestrator:
+  smoc0:
     end-point: ${SMOC0_ENDPOINT}

@@ -24,7 +24,6 @@ services:
       - "8083:8083"
     environment:
       - "spring.config.location=/config/application-docker.yml"
-      - IWDB0_ENDPOINT=http://IWDB0:8083
       - SMOC0_ENDPOINT=http://SMOC0:8089
     image: iwdb-img
     networks:
