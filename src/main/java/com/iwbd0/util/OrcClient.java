@@ -1,27 +1,22 @@
 package com.iwbd0.util;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.iwbd0.saga.model.request.OrchestratorRequest;
 import com.iwbd0.saga.model.response.OrchestratorResponse;
 
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Service
 public class OrcClient {
 
-	//@Value("${config.orchestrator.end-point}")
-	private String url = "http://localhost:8089/";
+	@Value("${config.orchestrator.end-point}")
+	private String url;
 	WebClient webClient = WebClient.create(url);
 	
 	@Async
@@ -30,9 +25,10 @@ public class OrcClient {
 		OrchestratorResponse iResp = new OrchestratorResponse();
 		Mono<OrchestratorResponse> response = null;
 
+		String uri = UriComponentsBuilder.fromHttpUrl(url + "/sess/get").toUriString();
 		try {
 			response = webClient.post()
-					.uri("orc/do")
+					.uri(uri)
 					 .bodyValue(request)
 					 .retrieve()
                      .bodyToMono(OrchestratorResponse.class)

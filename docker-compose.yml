@@ -2,25 +2,52 @@ services:
   GPOC0:
     build:
       context: .
-      dockerfile: GPOC0/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8085:8085"
+    volumes:
+      - ./config:/config
+    environment:
+      - "spring.config.location=/config/application-docker.yml"
+      - IWDB0_ENDPOINT=http://IWDB0:8083
+      - CACH0_ENDPOINT=http://CACH0:8082
+      
     image: gpoc-img
+    networks:
+      - app-net
+      
   IWDB0:
     build:
       context: .
-      dockerfile: IWDB0/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8083:8083"
+    environment:
+      - "spring.config.location=/config/application-docker.yml"
+      - IWDB0_ENDPOINT=http://IWDB0:8083
+      - SMOC0_ENDPOINT=http://SMOC0:8089
     image: iwdb-img
+    networks:
+      - app-net
     volumes:
       - data:/var/lib/h2
+      - ./config:/config
   SMOC0:
     build:
       context: .
-      dockerfile: SMOC0/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8089:8089"
+    volumes:
+      - ./config:/config
+    environment:
+      - "spring.config.location=/config/application-docker.yml"
+      - IWDB0_ENDPOINT=http://IWDB0:8083
     image: smoc-img
+    networks:
+      - app-net
 volumes:
   data:
+networks:
+  app-net:
+    driver: bridge
