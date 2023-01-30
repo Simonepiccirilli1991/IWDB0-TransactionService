@@ -36,7 +36,6 @@ public class DbServiceTest {
 		
 		Utente utente = new Utente();
 		utente.setBt("blabla");
-		utente.setCf("cf-1234");
 		utente.setChannel("test");
 		utente.setUsername("user-test");
 		
@@ -44,8 +43,7 @@ public class DbServiceTest {
 		
 		Utente secondUt = new Utente();
 		secondUt.setBt("trty");
-		secondUt.setCf("cf-1234");
-		secondUt.setChannel("test");
+		secondUt.setChannel("test-4");
 		secondUt.setUsername("user-test");
 		
 		List<Utente> listUt = new ArrayList<>();
@@ -56,7 +54,7 @@ public class DbServiceTest {
 		System.out.println(utenteRepo.findAll());
 		Optional<Utente> ut = utenteRepo.findAll().stream().filter(resp -> resp.getBt().equals("blabla")).findAny();
 		
-		assertThat(ut.get().getCf()).isEqualTo("cf-1234");
+		assertThat(ut.get().getChannel()).isEqualTo("test");
 	}
 	
 	
@@ -67,13 +65,11 @@ public class DbServiceTest {
 		// setto dto pagatori
 		Utente utenteToPay = new Utente();
 		utenteToPay.setBt("utToPay");
-		utenteToPay.setCf("cf1-1234");
 		utenteToPay.setChannel("test1");
 		utenteToPay.setUsername("user-test1");
 		
 		Utente utenteToReceive = new Utente();
 		utenteToReceive.setBt("utToReceiuve");
-		utenteToReceive.setCf("cf2-1234");
 		utenteToReceive.setChannel("test2");
 		utenteToReceive.setUsername("user-test2");
 		

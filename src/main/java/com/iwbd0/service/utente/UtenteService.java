@@ -28,10 +28,8 @@ public class UtenteService {
 		String bt = request.getNome() + request.getCognome().hashCode();
 		
 		utente.setBt(bt);
-		utente.setCf(request.getCf());
 		utente.setChannel(request.getChannel());
 		utente.setUsername(request.getNome().substring(0, 2)+request.getCognome());
-		utente.setMail(request.getMail());
 		
 		try {
 		utenteRepo.save(utente);

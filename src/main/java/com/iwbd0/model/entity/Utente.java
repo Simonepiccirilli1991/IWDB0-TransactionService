@@ -22,9 +22,7 @@ public class Utente {
 	private long id;
 	private String bt;
 	private String username;
-	private String cf;
 	private String channel;
-	private String mail;
 	@OneToOne(mappedBy = "utente", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL)
 	private Account account;
@@ -40,12 +38,6 @@ public class Utente {
 	}
 	public void setUsername(String username) {
 		this.username = username;
-	}
-	public String getCf() {
-		return cf;
-	}
-	public void setCf(String cf) {
-		this.cf = cf;
 	}
 	public String getChannel() {
 		return channel;
@@ -64,12 +56,6 @@ public class Utente {
 	}
 	public void setId(long id) {
 		this.id = id;
-	}
-	public String getMail() {
-		return mail;
-	}
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 	
 	
