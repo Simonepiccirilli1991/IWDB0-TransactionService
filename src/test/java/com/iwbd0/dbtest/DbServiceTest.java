@@ -17,7 +17,10 @@ import com.iwbd0.entity.repo.UtenteRepo;
 import com.iwbd0.model.entity.Account;
 import com.iwbd0.model.entity.Utente;
 import com.iwbd0.model.request.DispoRequest;
+import com.iwbd0.model.response.StatusResponse;
 import com.iwbd0.service.dispo.DispoService;
+import com.iwbd0.service.status.StatusService;
+import com.iwbd0.util.UtilConstatns;
 
 @SpringBootTest
 @AutoConfigureTestDatabase //h2
@@ -25,7 +28,8 @@ public class DbServiceTest {
 	
 	@Autowired
 	DispoService dispoService;
-	
+	@Autowired
+	StatusService statusService;
 	@Autowired
 	UtenteRepo utenteRepo;
 	@Autowired
@@ -130,6 +134,26 @@ public class DbServiceTest {
 		
 		assertThat(accRepo.findByUtenteBt("utToReceiuve").getSaldoattuale()).isEqualTo(60.00);
 	    assertThat(accRepo.findByUtenteBt("utToPay").getSaldoattuale()).isEqualTo(50.00);
+	}
+	//--------------------- Status service Test -----------------------------------------//
+	@Test
+	public void statusTest() {
+		
+		Utente utente = new Utente();
+		utente.setBt("bt-status");
+		
+		utenteRepo.save(utente);
+		
+		Account account = new Account();
+		account.setUtente(utente);
+		account.setCodiceconto("43552t");
+		
+		accRepo.save(account);
+		
+		StatusResponse response = statusService.getStatus("bt-status");
+		
+		assertThat(response.getStatus()).isEqualTo(UtilConstatns.StatusResp.REGISTRATION_FOUND);
+		
 	}
 
 }

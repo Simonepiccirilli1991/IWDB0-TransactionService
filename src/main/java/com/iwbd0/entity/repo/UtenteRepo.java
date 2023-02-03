@@ -12,4 +12,8 @@ public interface UtenteRepo extends JpaRepository<Utente, String>{
 			nativeQuery = true)
 	Utente findByUsername(@Param("username") String username);
 	
+	@Query(value = "SELECT * FROM utente WHERE utente.bt = :bt",
+			nativeQuery = true)
+	Utente findByBt(@Param("bt") String bt);
+	
 }
