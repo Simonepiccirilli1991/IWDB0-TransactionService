@@ -2,6 +2,8 @@ package com.iwbd0.service.account;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -21,8 +23,11 @@ public class AccountService {
 	@Autowired
 	UtenteRepo utRepo;
 	
+	Logger logger = LoggerFactory.getLogger(AccountService.class);
+	
 	// insert Acc
 	public AccountRespone insertAccount(AccountRequest request) {
+		logger.info("API :AccountService - insertAccount -  START with raw request: {}", request);
 		
 		AccountRespone response = new AccountRespone();
 		Account entity = new Account();
@@ -41,6 +46,7 @@ public class AccountService {
 			response.setErrDsc("Utente not found");
 			response.setIsError(true);
 			response.setMsg("error on checking utente");
+			logger.info("API :AccountService - insertAccount - END with response: {}", response);
 			return response;
 		}
 
@@ -49,7 +55,7 @@ public class AccountService {
 			accRepo.save(entity);
 
 		}catch(Exception e){
-
+			logger.error("API :AccountService - insertAccount - EXCEPTION", e);
 			response.setCodiceEsito("ERKO-03");
 			response.setErrDsc("Error on saving Account dispo");
 			response.setIsError(true);
@@ -60,13 +66,16 @@ public class AccountService {
 
 		response.setCodiceEsito("00");
 		response.setMsg("Creating account OK");
-
+		
+		logger.info("API :AccountService - insertAccount - END with response: {}", response);
+		
 		return response;
 	}
 	
 	
 	// getInfoAccount
 	public AccountRespone getInfoAcc(String bt) {
+		logger.info("API :AccountService - getInfoAcc -  START with raw request: {}", bt);
 		
 		AccountRespone response = new AccountRespone();
 		Account acc = null;
@@ -78,6 +87,8 @@ public class AccountService {
 			response.setErrDsc("Error on finding Account dispo");
 			response.setIsError(true);
 			response.setMsg("Error on finding Account dispo for this bt:"+bt);
+			logger.info("API :AccountService - getInfoAcc - END with response: {}", response);
+			
 			return response;
 		}
 
@@ -85,13 +96,15 @@ public class AccountService {
 
 		response.setAccount(acc);
 		response.setCodiceEsito("00");
-
+		logger.info("API :AccountService - getInfoAcc - END with response: {}", response);
+		
 		return response;
 	}
 	
 	//updateAccInfo
 	public AccountRespone updateAccInfo(AccountRequest request) {
-
+		logger.info("API :AccountService - updateAccInfo -  START with raw request: {}", request);
+		
 		AccountRespone response = new AccountRespone();
 		Account acc = null;
 
@@ -102,6 +115,8 @@ public class AccountService {
 			response.setErrDsc("Error on finding Account dispo");
 			response.setIsError(true);
 			response.setMsg("Error on finding Account dispo for this bt:"+request.getBt());
+			logger.info("API :AccountService - updateAccInfo - END with response: {}", response);
+			
 			return response;
 		}
 
@@ -116,6 +131,7 @@ public class AccountService {
 		try {
 			response.setAccount(accRepo.save(acc));
 		}catch(Exception e) {
+			logger.error("API :AccountService - updateAccInfo - EXCEPTION", e);
 			response.setCodiceEsito("ERKO-02");
 			response.setErrDsc("Error on updating Account dispo");
 			response.setIsError(true);
@@ -124,7 +140,8 @@ public class AccountService {
 		}
 		
 		response.setCodiceEsito("00");
-
+		logger.info("API :AccountService - updateAccInfo - END with response: {}", response);
+		
 		return response;
 	}
 }

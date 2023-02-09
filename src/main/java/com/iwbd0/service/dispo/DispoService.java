@@ -1,7 +1,7 @@
 package com.iwbd0.service.dispo;
 
-import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -11,7 +11,6 @@ import org.springframework.util.ObjectUtils;
 import com.iwbd0.entity.repo.AccountRepo;
 import com.iwbd0.entity.repo.UtenteRepo;
 import com.iwbd0.model.entity.Account;
-import com.iwbd0.model.entity.Utente;
 import com.iwbd0.model.request.DispoRequest;
 import com.iwbd0.model.response.DispoResponse;
 
@@ -23,10 +22,14 @@ public class DispoService {
 	AccountRepo accountRepo;
 	@Autowired
 	UtenteRepo utRepo;
-	
-	
+
+	Logger logger = LoggerFactory.getLogger(DispoService.class);
+
+
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public DispoResponse dispoPayService(DispoRequest request) {
+		logger.info("API :DispoService - dispoPayService -  START with raw request: {}", request);
+
 		DispoResponse response = new DispoResponse();
 
 		if(ObjectUtils.isEmpty(request.getImporto()) || ObjectUtils.isEmpty(request.getBtToPay())
@@ -34,6 +37,7 @@ public class DispoService {
 			response.setCodiceEsito("400");
 			response.setIsError(true);
 			response.setErrDsc("Missing parameter on request");
+			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
 			return response;
 		}
 
@@ -45,6 +49,7 @@ public class DispoService {
 			userToPay = accountRepo.findByUtenteBt(request.getBtToPay());
 			userToReceive = accountRepo.findByUtenteBt(request.getBtToReceive());
 		}catch(Exception e) {
+			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
 			response.setCodiceEsito("404");
 			response.setIsError(true);
 			response.setErrDsc("Utente dispo conto non trovato");
@@ -55,104 +60,75 @@ public class DispoService {
 			response.setCodiceEsito("404");
 			response.setIsError(true);
 			response.setErrDsc("Utente dispo conto non trovato");
+			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
 			return response;
 		}
+		// controllo se puo pagare diretto
+		var directTranscaction = (userToPay.getSaldoattuale() >= request.getImporto()) ? true : false;
+		// paga diretto
+		if(directTranscaction) {
+			var updateContoPay = userToPay.getSaldoattuale() - request.getImporto();
+			var updateContoReceive = userToReceive.getSaldoattuale() + request.getImporto();
+			pagamentoDiretto(userToPay.getCodiceconto(), userToReceive.getCodiceconto(), updateContoPay, updateContoReceive);
+		}
+		else {
+			//faccio debito
+			var controlloDebito = (userToPay.getSaldoattuale() > 0) ? request.getImporto() - userToPay.getSaldoattuale() + userToPay.getDebito() : userToPay.getDebito() + request.getImporto();
+			if(Boolean.TRUE.equals(userToPay.getTipoConto().equals("Debit")) && controlloDebito <= 1000.00) {
 
-		// controllo che tipo di conto ha
-		if(Boolean.TRUE.equals(userToPay.getTipoConto().equals("Debit"))) {
-			// controllo che abbia i soldi o sia nel limite per debiti
-			if(Boolean.TRUE.equals(makeTransactionDebit(request.getImporto(), userToPay))) {
-				// ha cash quindi fare effettivo update dei 2 conti
-				Double soldiConto = userToPay.getSaldoattuale();
-				Double debitoConto = userToPay.getDebito();
-				//caso1 ha soldi sul conto per coprire una parte
-				if(soldiConto != 0) {
-					//controllo se puo pagare diretto
-					if(soldiConto >= request.getImporto()) {
-						Double updateContoPay = soldiConto - request.getImporto();
-						Double updateContoReceive = userToReceive.getSaldoattuale() + request.getImporto();
-						// scalo soldi da chi paga
-						//userToPay.setSaldoattuale(updateContoPay);
-						accountRepo.addBalance(userToPay.getCodiceconto(), updateContoPay);
-						//accountRepo.save(userToPay);
-						// addo soldi a chi riceve
-						//userToReceive.setSaldoattuale(updateContoReceive);
-						//accountRepo.save(userToReceive);
-						accountRepo.addBalance(userToReceive.getCodiceconto(), updateContoReceive);
-						
-						//cancellare poi
-						Account print1 = accountRepo.findByUtenteBt(request.getBtToPay());
-						Account print2 = accountRepo.findByUtenteBt(request.getBtToReceive());
-						System.out.println(print1);
-						System.out.println(print2);
-					}//non puo pagare diretto
-					else {
-						// calcolo quanto scalare a conto e aggiungere a debito
-						Double effective = request.getImporto() - soldiConto;
-						debitoConto = debitoConto + effective;
-						accountRepo.addBalanceDebit(request.getBtToPay(), 0, debitoConto);
-						// pago chi deve riceve
-						accountRepo.addBalance(request.getBtToReceive(), request.getImporto());
-					}
-
-				}//caso2 non li ha vado diretto su debito, so gia che puo farlo se arriva qui
-				else {
-					// calcolo quanto scalare a conto e aggiungere a debito
-					Double effective = request.getImporto() - soldiConto;
-					debitoConto = debitoConto + effective;
-					accountRepo.addBalanceDebit(request.getBtToPay(), 0, debitoConto);
-					// pago chi deve riceve
-					accountRepo.addBalance(request.getBtToReceive(), request.getImporto());
-				}
-			}// non ha soldi e supera platform debito torno eccezione 
+				pagamentoDebito(userToPay, userToReceive, request.getImporto());
+			}
 			else {
 				response.setCodiceEsito("erko-cash");
 				response.setIsError(true);
 				response.setErrDsc("Operazione non possibile, controllare platform");
 				response.setTransactionOk(false);
-				return response;
-			}
-		}else {
-			Double soldiConto = userToPay.getSaldoattuale();
-
-			if(soldiConto >= request.getImporto()) {
-				Double updateContoPay = soldiConto - request.getImporto();
-				// pago diretto
-				accountRepo.addBalance(request.getBtToPay(), updateContoPay);
-				// addo a chi riceve
-				accountRepo.addBalance(request.getBtToReceive(), request.getImporto());
-			}else {
-				response.setCodiceEsito("erko-cash");
-				response.setIsError(true);
-				response.setErrDsc("Operazione non possibile, controllare platform");
-				response.setTransactionOk(false);
+				logger.info("API :DispoService - dispoPayService - END with response: {}", response);
 				return response;
 			}
 		}
 		
-			response.setCodiceEsito("00");
-			response.setTransactionOk(true);
-			return response;
+		response.setCodiceEsito("00");
+		response.setTransactionOk(true);
+		logger.info("API :DispoService - dispoPayService - END with response: {}", response);
+		return response;
+	}		
+
+
+	private void pagamentoDiretto(String contoPay, String contoReceive, Double updateContoPay, Double updateContoReceive) {
+
+		try {
+			accountRepo.addBalance(contoPay, updateContoPay);
+			accountRepo.addBalance(contoReceive, updateContoReceive);
+
+		}catch(Exception e) {
+			//TODO implementare eccezzione
+			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
+		}
+	}
+
+	private void pagamentoDebito(Account userToPay, Account userToReceive, Double importo) {
+
+		if(userToPay.getSaldoattuale() > 0) {
+
+			var updateDebitoPay = (importo - userToPay.getSaldoattuale()) + userToPay.getDebito();
+			// effettuo update
+			try {
+				accountRepo.addBalanceDebit(userToPay.getCodiceconto(), 0, updateDebitoPay);
+				accountRepo.addBalance(userToReceive.getCodiceconto(), importo);
+			}catch(Exception e) {
+				logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
+			}
+		}
+		//2 debituo va diretto su deb
+		var updateDebitoPay = importo  + userToPay.getDebito();
+		// effettuo update
+		try {
+			accountRepo.addBalanceDebit(userToPay.getCodiceconto(), 0, updateDebitoPay);
+			accountRepo.addBalance(userToReceive.getCodiceconto(), importo);
+		}catch(Exception e) {
+			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
 		}
 
-		private Boolean makeTransactionDebit(Double importo,Account conto ) {
-
-			//caso 1 ci sono soldi sul conto
-			if(importo <= conto.getSaldoattuale()) {
-				return true;
-			}
-			//caso 2 non ci sono soldi su conto, ma puo andare in debito
-			else if(importo > conto.getSaldoattuale() && 1000.00 > conto.getDebito()) {
-
-				//controllo che importo non faccia superare tetto massimo
-				if(conto.getDebito()+importo <= 1000.00 +conto.getSaldoattuale()) {
-					return true;
-				}else
-					return false;
-
-			}
-			//caso 3 non dovrebbe esserci ma e venerdi e so stanco
-			return false;
-		}
-	
+	}
 }
