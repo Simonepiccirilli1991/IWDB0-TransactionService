@@ -14,6 +14,7 @@ import com.iwbd0.model.entity.Account;
 import com.iwbd0.model.entity.Utente;
 import com.iwbd0.saga.model.request.AccountRequest;
 import com.iwbd0.saga.model.response.AccountRespone;
+import com.iwbd0.util.BaseError;
 
 @Service
 public class AccountService {
@@ -40,14 +41,8 @@ public class AccountService {
 
 		Optional<Utente> ut = utRepo.findAll().stream().filter(resp -> resp.getBt().equals(request.getBt())).findAny();
 
-		if(ObjectUtils.isEmpty(ut.get())) {
-
-			response.setCodiceEsito("ERKO-02");
-			response.setErrDsc("Utente not found");
-			response.setIsError(true);
-			response.setMsg("error on checking utente");
-			logger.info("API :AccountService - insertAccount - END with response: {}", response);
-			return response;
+		if(ut.isEmpty()) {
+			throw new BaseError("ERKO-02");
 		}
 
 		entity.setUtente(ut.get());
@@ -83,13 +78,9 @@ public class AccountService {
 		Optional<Account> repoAcc = accRepo.findAll().stream().filter(resp -> resp.getUtente().getBt().equals(bt)).findAny();
 
 		if(ObjectUtils.isEmpty(repoAcc) || repoAcc.isEmpty()) {
-			response.setCodiceEsito("ERKO-03");
-			response.setErrDsc("Error on finding Account dispo");
-			response.setIsError(true);
-			response.setMsg("Error on finding Account dispo for this bt:"+bt);
-			logger.info("API :AccountService - getInfoAcc - END with response: {}", response);
 			
-			return response;
+			logger.info("API :AccountService - getInfoAcc - END with response: {}", response);
+			throw new BaseError("ERKO-02");
 		}
 
 		acc = repoAcc.get();

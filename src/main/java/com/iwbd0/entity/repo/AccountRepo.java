@@ -21,7 +21,7 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 			UPDATE account
 			SET saldoattuale =:saldoattuale
 		    debito =:debito
-			WHERE codiceConto =:codiceconto
+			WHERE codiceconto =:codiceconto
 			""",
 			nativeQuery = true)
 	@Modifying
