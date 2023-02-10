@@ -5,7 +5,7 @@ public class BaseResponse {
 	
 	private String msg;
 	private String codiceEsito;
-	private Boolean isError;
+	private boolean isError;
 	private String errDsc;
 	
 	public String getMsg() {
@@ -20,10 +20,10 @@ public class BaseResponse {
 	public void setCodiceEsito(String codiceEsito) {
 		this.codiceEsito = codiceEsito;
 	}
-	public Boolean getIsError() {
+	public boolean isError() {
 		return isError;
 	}
-	public void setIsError(Boolean isError) {
+	public void setError(boolean isError) {
 		this.isError = isError;
 	}
 	public String getErrDsc() {

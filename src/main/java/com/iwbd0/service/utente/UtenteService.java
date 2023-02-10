@@ -37,7 +37,7 @@ public class UtenteService {
 		catch(Exception e) {
 			response.setMsg(e.getMessage());
 			response.setCodiceEsito("ERKO-01");
-			response.setIsError(false);
+			response.setError(false);
 			return response;
 		}
 		
@@ -57,7 +57,7 @@ public class UtenteService {
 		if(ObjectUtils.isEmpty(ut.get())) {
 			response.setCodiceEsito("ERKO-02");
 			response.setErrDsc("Utente not found");
-			response.setIsError(true);
+			response.setError(true);
 			response.setMsg("error on checking utente");
 			return response;
 		}

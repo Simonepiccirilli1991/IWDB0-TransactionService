@@ -35,7 +35,7 @@ public class DispoService {
 		if(ObjectUtils.isEmpty(request.getImporto()) || ObjectUtils.isEmpty(request.getBtToPay())
 				|| ObjectUtils.isEmpty(request.getBtToReceive())) {
 			response.setCodiceEsito("400");
-			response.setIsError(true);
+			response.setError(true);
 			response.setErrDsc("Missing parameter on request");
 			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
 			return response;
@@ -51,14 +51,14 @@ public class DispoService {
 		}catch(Exception e) {
 			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
 			response.setCodiceEsito("404");
-			response.setIsError(true);
+			response.setError(true);
 			response.setErrDsc("Utente dispo conto non trovato");
 			return response;
 		}
 		//TODO implementare gestione errore piu fica, questa fa cagare ( portarla poi su tutto il sw)
 		if(ObjectUtils.isEmpty(userToPay) || ObjectUtils.isEmpty(userToReceive)) {
 			response.setCodiceEsito("404");
-			response.setIsError(true);
+			response.setError(true);
 			response.setErrDsc("Utente dispo conto non trovato");
 			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
 			return response;
@@ -80,7 +80,7 @@ public class DispoService {
 			}
 			else {
 				response.setCodiceEsito("erko-cash");
-				response.setIsError(true);
+				response.setError(true);
 				response.setErrDsc("Operazione non possibile, controllare platform");
 				response.setTransactionOk(false);
 				logger.info("API :DispoService - dispoPayService - END with response: {}", response);
