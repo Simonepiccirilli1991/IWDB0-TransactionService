@@ -31,6 +31,11 @@ public class UtenteResponse extends BaseResponse{
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	@Override
+	public String toString() {
+		return "UtenteResponse [utente=" + utente + ", bt=" + bt + ", username=" + username + "]";
+	}
 	
 	
 }

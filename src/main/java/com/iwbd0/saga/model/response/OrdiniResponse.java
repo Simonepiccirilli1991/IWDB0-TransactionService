@@ -21,6 +21,10 @@ public class OrdiniResponse {
 	public void setOrdini(List<Ordini> ordini) {
 		this.ordini = ordini;
 	}
+	@Override
+	public String toString() {
+		return "OrdiniResponse [ordine=" + ordine + ", ordini=" + ordini + "]";
+	}
 	
 	
 }

@@ -13,6 +13,7 @@ import com.iwbd0.entity.repo.UtenteRepo;
 import com.iwbd0.model.entity.Account;
 import com.iwbd0.model.request.DispoRequest;
 import com.iwbd0.model.response.DispoResponse;
+import com.iwbd0.model.response.UtenteResponse;
 
 @Service
 public class DispoService {
@@ -33,15 +34,9 @@ public class DispoService {
 		DispoResponse response = new DispoResponse();
 
 		if(ObjectUtils.isEmpty(request.getImporto()) || ObjectUtils.isEmpty(request.getBtToPay())
-				|| ObjectUtils.isEmpty(request.getBtToReceive())) {
-			response.setCodiceEsito("400");
-			response.setError(true);
-			response.setErrDsc("Missing parameter on request");
-			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
-			return response;
-		}
-
-
+				|| ObjectUtils.isEmpty(request.getBtToReceive())) 
+			return launchError("ERKO-00", "Missing parameter on request");
+		
 		Account userToPay = null;
 		Account userToReceive = null;
 
@@ -50,19 +45,12 @@ public class DispoService {
 			userToReceive = accountRepo.findByUtenteBt(request.getBtToReceive());
 		}catch(Exception e) {
 			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
-			response.setCodiceEsito("404");
-			response.setError(true);
-			response.setErrDsc("Utente dispo conto non trovato");
-			return response;
+			return launchError("ERKO-02", "Utente dispo conto non trovato");
 		}
-		//TODO implementare gestione errore piu fica, questa fa cagare ( portarla poi su tutto il sw)
-		if(ObjectUtils.isEmpty(userToPay) || ObjectUtils.isEmpty(userToReceive)) {
-			response.setCodiceEsito("404");
-			response.setError(true);
-			response.setErrDsc("Utente dispo conto non trovato");
-			logger.info("API :DispoService - dispoPayService - END with response: {}", response);
-			return response;
-		}
+		
+		if(ObjectUtils.isEmpty(userToPay) || ObjectUtils.isEmpty(userToReceive)) 
+			return launchError("ERKO-02", "Utente dispo conto non trovato");
+		
 		// controllo se puo pagare diretto
 		var directTranscaction = (userToPay.getSaldoattuale() >= request.getImporto()) ? true : false;
 		// paga diretto
@@ -79,12 +67,7 @@ public class DispoService {
 				pagamentoDebito(userToPay, userToReceive, request.getImporto());
 			}
 			else {
-				response.setCodiceEsito("erko-cash");
-				response.setError(true);
-				response.setErrDsc("Operazione non possibile, controllare platform");
-				response.setTransactionOk(false);
-				logger.info("API :DispoService - dispoPayService - END with response: {}", response);
-				return response;
+				return launchError("ERKO-05", "Operazione non possibile, controllare platform");
 			}
 		}
 		
@@ -130,5 +113,16 @@ public class DispoService {
 			logger.error("API :DispoService - dispoPayService - EXCEPTION", e);
 		}
 
+	}
+	
+	private DispoResponse launchError(String erko, String errMsg) {
+
+		DispoResponse response = new DispoResponse();
+		response.setError(true);
+		response.setCodiceEsito(erko);
+		response.setErrDsc(errMsg);
+		
+		logger.info("API :UtenteService - insertUtente - END with response: {}", response);
+		return response;
 	}
 }

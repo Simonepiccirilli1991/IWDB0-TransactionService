@@ -45,7 +45,7 @@ public class AccountService {
 		Optional<Utente> ut = utRepo.findAll().stream().filter(resp -> resp.getBt().equals(request.getBt())).findAny();
 
 		if(ut.isEmpty()) {
-		return launchError("ERKO-01", "Error on inserting acc");
+		return launchError("ERKO-02", "Error on finding acc");
 		}
 
 		entity.setUtente(ut.get());
@@ -54,11 +54,7 @@ public class AccountService {
 
 		}catch(Exception e){
 			logger.error("API :AccountService - insertAccount - EXCEPTION", e);
-			response.setCodiceEsito("ERKO-03");
-			response.setErrDsc("Error on saving Account dispo");
-			response.setError(true);
-			response.setMsg("Error on saving Account dispo");
-			return response;
+			return launchError("ERKO-01", "Error on saving Account dispo");
 
 		}
 
@@ -83,7 +79,7 @@ public class AccountService {
 		if(ObjectUtils.isEmpty(repoAcc) || repoAcc.isEmpty()) {
 			
 			logger.info("API :AccountService - getInfoAcc - END with response: {}", response);
-			throw new BaseError("ERKO-02");
+			return launchError("ERKO-02", "Error on finding acc");
 		}
 
 		acc = repoAcc.get();
@@ -105,13 +101,8 @@ public class AccountService {
 		Optional<Account> repoAcc = accRepo.findAll().stream().filter(resp -> resp.getUtente().getBt().equals(request.getBt())).findAny();
 
 		if(ObjectUtils.isEmpty(repoAcc) || repoAcc.isEmpty()) {
-			response.setCodiceEsito("ERKO-03");
-			response.setErrDsc("Error on finding Account dispo");
-			response.setError(true);
-			response.setMsg("Error on finding Account dispo for this bt:"+request.getBt());
 			logger.info("API :AccountService - updateAccInfo - END with response: {}", response);
-			
-			return response;
+			return launchError("ERKO-02", "Error on finding acc");
 		}
 
 		acc = repoAcc.get();
@@ -126,11 +117,7 @@ public class AccountService {
 			response.setAccount(accRepo.save(acc));
 		}catch(Exception e) {
 			logger.error("API :AccountService - updateAccInfo - EXCEPTION", e);
-			response.setCodiceEsito("ERKO-02");
-			response.setErrDsc("Error on updating Account dispo");
-			response.setError(true);
-			response.setMsg("Error on updating Account dispo for this bt:"+request.getBt());
-			return response;
+			return launchError("ERKO-03", "Error on updating Account dispo");
 		}
 		
 		response.setCodiceEsito("00");

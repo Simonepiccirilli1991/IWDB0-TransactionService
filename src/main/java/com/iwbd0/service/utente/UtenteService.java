@@ -2,6 +2,8 @@ package com.iwbd0.service.utente;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -18,8 +20,11 @@ public class UtenteService {
 	@Autowired
 	UtenteRepo utenteRepo;
 	
+	Logger logger = LoggerFactory.getLogger(UtenteService.class);
+	
 	
 	public UtenteResponse insertUtente(UtenteRequest request) {
+		logger.info("API :UtenteService - insertUtente -  START with raw request: {}", request);
 		
 		UtenteResponse response = new UtenteResponse();
 		
@@ -35,38 +40,45 @@ public class UtenteService {
 		utenteRepo.save(utente);
 		}
 		catch(Exception e) {
-			response.setMsg(e.getMessage());
-			response.setCodiceEsito("ERKO-01");
-			response.setError(false);
-			return response;
+			logger.error("API :UtenteService - insertUtente - EXCEPTION", e);
+			return launchError("ERKO-01", "Error on inserting ut");
 		}
 		
 		response.setBt(bt);
 		response.setUsername(utente.getUsername());
 		response.setCodiceEsito("00");
+		
+		logger.info("API :UtenteService - insertUtente - END with response: {}", response);
 		return response;
 		
 	}
 	
 	public UtenteResponse getInfoUtente(String bt) {
-		
+		logger.info("API :UtenteService - getInfoUtente -  START with raw request: {}", bt);
 		UtenteResponse response = new UtenteResponse();
 		
 		Optional<Utente> ut = utenteRepo.findAll().stream().filter(resp -> resp.getBt().equals(bt)).findAny();
 		
 		if(ObjectUtils.isEmpty(ut.get())) {
-			response.setCodiceEsito("ERKO-02");
-			response.setErrDsc("Utente not found");
-			response.setError(true);
-			response.setMsg("error on checking utente");
-			return response;
+			return launchError("ERKO-02", "Error on finding ut");
 		}
 		
 		
 		response.setUtente(ut.get());
 		response.setCodiceEsito("00");
+		logger.info("API :UtenteService - getInfoUtente - END with response: {}", response);
 		
 		return response;
 	}
 	
+	private UtenteResponse launchError(String erko, String errMsg) {
+
+		UtenteResponse response = new UtenteResponse();
+		response.setError(true);
+		response.setCodiceEsito(erko);
+		response.setErrDsc(errMsg);
+		
+		logger.info("API :UtenteService - insertUtente - END with response: {}", response);
+		return response;
+	}
 }
