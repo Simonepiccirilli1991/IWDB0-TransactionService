@@ -1,5 +1,7 @@
 package com.iwbd0.controller;
 
+import com.iwbd0.model.response.BaseResponse;
+import com.iwbd0.service.account.RechargeAccService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ public class AccountController {
 
 	@Autowired
 	AccountService accService;
+	@Autowired
+	RechargeAccService rechargeAccService;
 	
 	@PostMapping("insert")
 	public ResponseEntity<AccountRespone> insertAcc(@RequestBody AccountRequest request){
@@ -37,5 +41,10 @@ public class AccountController {
 	public ResponseEntity<AccountRespone> updateAcc(@RequestBody AccountRequest request){
 		
 		return new ResponseEntity<>(accService.updateAccInfo(request), HttpStatus.OK);
+	}
+	@PostMapping("recahrge")
+	public ResponseEntity<BaseResponse> rechargeAcc(@RequestBody AccountRequest request){
+
+		return new ResponseEntity<>(rechargeAccService.rechargeAccount(request.getCodiceConto(), request.getImporto()), HttpStatus.OK);
 	}
 }

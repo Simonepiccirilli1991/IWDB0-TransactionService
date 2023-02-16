@@ -15,6 +15,7 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 
 	void deleteByUtente(Utente utente);
 	Account findByUtenteBt(String bt);
+	Account findByCodiceconto(String codiceconto);
 	void deleteByUtenteBt(String username);
 	
 	@Query(value = """
@@ -42,5 +43,6 @@ public interface AccountRepo extends JpaRepository<Account, Long>{
 	@Modifying
 	@Transactional
 	int addBalance(@Param("codiceconto") String codiceconto, @Param("saldoattuale") double saldoattuale);
+
 
 }

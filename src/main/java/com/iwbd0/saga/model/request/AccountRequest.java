@@ -1,5 +1,8 @@
 package com.iwbd0.saga.model.request;
 
+import lombok.Data;
+
+@Data
 public class AccountRequest {
 
 	private String bt;
@@ -8,6 +11,8 @@ public class AccountRequest {
 	// per creazione acc
 	private String tipoAccount;
 	private Double debito;
+
+	private String codiceConto;
 	public String getBt() {
 		return bt;
 	}

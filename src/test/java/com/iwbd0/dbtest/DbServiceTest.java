@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
+import com.iwbd0.model.response.BaseResponse;
+import com.iwbd0.service.account.RechargeAccService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -34,6 +36,8 @@ public class DbServiceTest {
 	UtenteRepo utenteRepo;
 	@Autowired
 	AccountRepo accRepo;
+	@Autowired
+	RechargeAccService rechargeAccService;
 	
 	@Test
 	public void provadbOK() {
@@ -154,6 +158,29 @@ public class DbServiceTest {
 		
 		assertThat(response.getStatus()).isEqualTo(UtilConstatns.StatusResp.REGISTRATION_FOUND);
 		
+	}
+
+	@Test
+	public void rechargeAccountTestOk(){
+
+		Utente utente = new Utente();
+		utente.setBt("bt-recharge");
+
+		utenteRepo.save(utente);
+
+		Account account = new Account();
+		account.setUtente(utente);
+		account.setCodiceconto("43552t");
+		account.setSaldoattuale(0.00);
+		account.setDebito(0.00);
+
+		accRepo.save(account);
+
+		BaseResponse response = rechargeAccService.rechargeAccount("43552t", 100.00);
+
+		assertThat(response.isError()).isFalse();
+		assertThat(accRepo.findByUtenteBt("bt-recharge").getSaldoattuale()).isEqualTo(100.00);
+
 	}
 
 }
